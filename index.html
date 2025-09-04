@@ -8,486 +8,487 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body class="bg-gray-50 overflow-auto lg:overflow-hidden m-0 p-0">
-<!-- Header -->
-<header class="bg-blue-600 text-white shadow-lg">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <h1 class="text-2xl font-bold text-center">Bellman-Ford Algorithm Visualization</h1>
+            <p class="text-center text-blue-100 mt-1 text-sm">Interactive shortest path algorithm with negative edge
+                detection</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
     <div class="container mx-auto px-4 py-4">
-        <h1 class="text-2xl font-bold text-center">Bellman-Ford Algorithm Visualization</h1>
-        <p class="text-center text-blue-100 mt-1 text-sm">Interactive shortest path algorithm with negative edge
-            detection</p>
-    </div>
-</header>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
-<!-- Main Content -->
-<div class="container mx-auto px-4 py-4">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <!-- Left sidebar -->
+            <div class="lg:col-span-2 space-y-4">
+                <!-- Algorithm Statistics -->
+                <div class="bg-white rounded-lg shadow-lg p-4">
+                    <h3 class="text-base font-semibold text-gray-800 mb-3">Statistics</h3>
 
-        <!-- Left sidebar -->
-        <div class="lg:col-span-2 space-y-4">
-            <!-- Algorithm Statistics -->
-            <div class="bg-white rounded-lg shadow-lg p-4">
-                <h3 class="text-base font-semibold text-gray-800 mb-3">Statistics</h3>
+                    <div class="space-y-3">
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <div class="text-xs text-gray-600">Current Iteration</div>
+                            <div class="text-lg font-bold text-blue-600">0 / 0</div>
+                        </div>
 
-                <div class="space-y-3">
-                    <div class="bg-gray-50 p-3 rounded-lg">
-                        <div class="text-xs text-gray-600">Current Iteration</div>
-                        <div class="text-lg font-bold text-blue-600">0 / 0</div>
-                    </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="bg-gray-50 p-2 rounded-lg">
+                                <div class="text-xs text-gray-600">Nodes</div>
+                                <div class="text-sm font-semibold">0</div>
+                            </div>
+                            <div class="bg-gray-50 p-2 rounded-lg">
+                                <div class="text-xs text-gray-600">Edges</div>
+                                <div class="text-sm font-semibold">0</div>
+                            </div>
+                        </div>
 
-                    <div class="grid grid-cols-2 gap-2">
                         <div class="bg-gray-50 p-2 rounded-lg">
-                            <div class="text-xs text-gray-600">Nodes</div>
-                            <div class="text-sm font-semibold">0</div>
+                            <div class="text-xs text-gray-600">Execution Time</div>
+                            <div class="text-sm font-bold text-green-600">0.00 ms</div>
                         </div>
+
                         <div class="bg-gray-50 p-2 rounded-lg">
-                            <div class="text-xs text-gray-600">Edges</div>
-                            <div class="text-sm font-semibold">0</div>
+                            <div class="text-xs text-gray-600">Shortest Path Length</div>
+                            <div class="text-sm font-bold text-purple-600">N/A</div>
+                        </div>
+
+                        <div class="bg-gray-50 p-2 rounded-lg">
+                            <div class="text-xs text-gray-600">Negative Cycle</div>
+                            <div class="text-sm font-semibold text-red-600">Not Detected</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graph Visualization Area -->
+            <div class="lg:col-span-8 bg-white rounded-lg shadow-lg p-4">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-lg font-semibold text-gray-800">Graph Visualization</h2>
+                    <div class="flex items-center space-x-3 text-xs text-gray-600">
+                        <div class="flex items-center">
+                            <div class="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                            <span>Source</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-2 h-2 bg-red-500 rounded-full mr-1"></div>
+                            <span>Target</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full mr-1"></div>
+                            <span>Regular</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-2 h-2 bg-yellow-500 rounded-full mr-1"></div>
+                            <span>Processing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graph Canvas Area -->
+                <div id="graph-container"
+                     class="w-full h-[calc(100vh-240px)] border-2 border-gray-200 rounded-lg bg-gray-50 relative overflow-hidden">
+                    <!-- This will be populated by JavaScript -->
+                    <div id="graph-placehoder" class="flex items-center justify-center h-full text-gray-400">
+                        <div class="text-center">
+                            <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                            <p class="text-lg">Graph will appear here</p>
+                            <p class="text-sm">Click "Generate Graph" to start</p>
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 p-2 rounded-lg">
-                        <div class="text-xs text-gray-600">Execution Time</div>
-                        <div class="text-sm font-bold text-green-600">0.00 ms</div>
-                    </div>
+                    <div id="graph" class="hidden"></div>
 
-                    <div class="bg-gray-50 p-2 rounded-lg">
-                        <div class="text-xs text-gray-600">Shortest Path Length</div>
-                        <div class="text-sm font-bold text-purple-600">N/A</div>
-                    </div>
-
-                    <div class="bg-gray-50 p-2 rounded-lg">
-                        <div class="text-xs text-gray-600">Negative Cycle</div>
-                        <div class="text-sm font-semibold text-red-600">Not Detected</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Graph Visualization Area -->
-        <div class="lg:col-span-8 bg-white rounded-lg shadow-lg p-4">
-            <div class="flex justify-between items-center mb-3">
-                <h2 class="text-lg font-semibold text-gray-800">Graph Visualization</h2>
-                <div class="flex items-center space-x-3 text-xs text-gray-600">
-                    <div class="flex items-center">
-                        <div class="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
-                        <span>Source</span>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="w-2 h-2 bg-red-500 rounded-full mr-1"></div>
-                        <span>Target</span>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="w-2 h-2 bg-blue-500 rounded-full mr-1"></div>
-                        <span>Regular</span>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="w-2 h-2 bg-yellow-500 rounded-full mr-1"></div>
-                        <span>Processing</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Graph Canvas Area -->
-            <div id="graph-container"
-                 class="w-full h-[calc(100vh-240px)] border-2 border-gray-200 rounded-lg bg-gray-50 relative overflow-hidden">
-                <!-- This will be populated by JavaScript -->
-                <div id="graph-placehoder" class="flex items-center justify-center h-full text-gray-400">
-                    <div class="text-center">
-                        <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor"
-                             viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                        </svg>
-                        <p class="text-lg">Graph will appear here</p>
-                        <p class="text-sm">Click "Generate Graph" to start</p>
-                    </div>
-                </div>
-
-                <div id="graph" class="hidden"></div>
-
-                <!-- Floating Modal Buttons -->
-                <div class="absolute top-3 right-3">
-                    <!-- Toggle Button -->
-                    <button id="info-toggle" onclick="toggleInfoButtons()"
-                            class="bg-gray-600 hover:bg-gray-700 text-white p-2 rounded-full shadow-lg transition-all hover:scale-110 mb-2"
-                            title="Toggle Information">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
-                        </svg>
-                    </button>
-
-                    <!-- Info Buttons Container -->
-                    <div id="info-buttons"
-                         class="flex flex-col space-y-2 opacity-0 transform scale-95 transition-all duration-300 pointer-events-none">
-                        <!-- What is Bellman-Ford Button -->
-                        <button onclick="document.getElementById('what-is-modal').showModal()"
-                                class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-all hover:scale-110 group"
-                                title="What is Bellman-Ford?">
+                    <!-- Floating Modal Buttons -->
+                    <div class="absolute top-3 right-3">
+                        <!-- Toggle Button -->
+                        <button id="info-toggle" onclick="toggleInfoButtons()"
+                                class="bg-gray-600 hover:bg-gray-700 text-white p-2 rounded-full shadow-lg transition-all hover:scale-110 mb-2"
+                                title="Toggle Information">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                      d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
                             </svg>
-                            <div class="absolute right-full mr-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                What is Bellman-Ford?
-                            </div>
                         </button>
 
-                        <!-- How it Works Button -->
-                        <button onclick="document.getElementById('how-works-modal').showModal()"
-                                class="bg-green-600 hover:bg-green-700 text-white p-2 rounded-full shadow-lg transition-all hover:scale-110 group"
-                                title="How it Works">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                            </svg>
-                            <div class="absolute right-full mr-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                How it Works
-                            </div>
-                        </button>
+                        <!-- Info Buttons Container -->
+                        <div id="info-buttons"
+                             class="flex flex-col space-y-2 opacity-0 transform scale-95 transition-all duration-300 pointer-events-none">
+                            <!-- What is Bellman-Ford Button -->
+                            <button onclick="document.getElementById('what-is-modal').showModal()"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-all hover:scale-110 group"
+                                    title="What is Bellman-Ford?">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div class="absolute right-full mr-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                    What is Bellman-Ford?
+                                </div>
+                            </button>
 
-                        <!-- Use Cases & Benefits Button -->
-                        <button onclick="document.getElementById('benefits-modal').showModal()"
-                                class="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-full shadow-lg transition-all hover:scale-110 group"
-                                title="Use Cases & Benefits">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <div class="absolute right-full mr-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                Use Cases & Benefits
-                            </div>
-                        </button>
+                            <!-- How it Works Button -->
+                            <button onclick="document.getElementById('how-works-modal').showModal()"
+                                    class="bg-green-600 hover:bg-green-700 text-white p-2 rounded-full shadow-lg transition-all hover:scale-110 group"
+                                    title="How it Works">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                </svg>
+                                <div class="absolute right-full mr-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                    How it Works
+                                </div>
+                            </button>
 
-                        <!-- Drawbacks & Complexity Button -->
-                        <button onclick="document.getElementById('drawbacks-modal').showModal()"
-                                class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full shadow-lg transition-all hover:scale-110 group"
-                                title="Drawbacks & Complexity">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                            </svg>
-                            <div class="absolute right-full mr-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                Drawbacks & Complexity
-                            </div>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+                            <!-- Use Cases & Benefits Button -->
+                            <button onclick="document.getElementById('benefits-modal').showModal()"
+                                    class="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-full shadow-lg transition-all hover:scale-110 group"
+                                    title="Use Cases & Benefits">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div class="absolute right-full mr-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                    Use Cases & Benefits
+                                </div>
+                            </button>
 
-        <!-- Right Sidebar -->
-        <div class="lg:col-span-2 space-y-4">
-
-            <!-- Path Selection -->
-            <div class="bg-white rounded-lg shadow-lg p-4">
-                <h3 class="text-base font-semibold text-gray-800 mb-3">Path Selection</h3>
-
-                <div class="space-y-3">
-                    <div>
-                        <label for="source" class="block text-sm font-medium text-gray-700 mb-1">Source Node</label>
-                        <select id="source"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option>Select source...</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="target" class="block text-sm font-medium text-gray-700 mb-1">Target Node</label>
-                        <select id="target"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option>Select target...</option>
-                        </select>
+                            <!-- Drawbacks & Complexity Button -->
+                            <button onclick="document.getElementById('drawbacks-modal').showModal()"
+                                    class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full shadow-lg transition-all hover:scale-110 group"
+                                    title="Drawbacks & Complexity">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                </svg>
+                                <div class="absolute right-full mr-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                    Drawbacks & Complexity
+                                </div>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Control Panel -->
-            <div class="bg-white rounded-lg shadow-lg p-4">
-                <h3 class="text-base font-semibold text-gray-800 mb-3">Controls</h3>
+            <!-- Right Sidebar -->
+            <div class="lg:col-span-2 space-y-4">
 
-                <!-- Graph Controls -->
-                <div class="space-y-2 mb-4">
-                    <button onclick="generateRandomGraph()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-3 rounded-lg transition-colors text-sm">
-                        Generate New Graph
-                    </button>
-                    <button onclick="resetAlgorithm()" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-3 rounded-lg transition-colors text-sm">
-                        Reset Algorithm
-                    </button>
-                </div>
+                <!-- Path Selection -->
+                <div class="bg-white rounded-lg shadow-lg p-4">
+                    <h3 class="text-base font-semibold text-gray-800 mb-3">Path Selection</h3>
 
-                <!-- Algorithm Controls -->
-                <div class="border-t pt-3 space-y-2 mb-4">
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="startAlgorithm()" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-2 rounded-lg transition-colors text-xs">
-                            Start
-                        </button>
-                        <button onclick="stopAlgorithm()" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-2 rounded-lg transition-colors text-xs">
-                            Stop
-                        </button>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="stepAlgorithm()" class="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-2 rounded-lg transition-colors text-xs">
-                            Step
-                        </button>
-                        <button onclick="continueAlgorithm()" class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-2 rounded-lg transition-colors text-xs">
-                            Continue
-                        </button>
+                    <div class="space-y-3">
+                        <div>
+                            <label for="source" class="block text-sm font-medium text-gray-700 mb-1">Source Node</label>
+                            <select id="source"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>Select source...</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="target" class="block text-sm font-medium text-gray-700 mb-1">Target Node</label>
+                            <select id="target"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option>Select target...</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Speed Control -->
-                <div class="border-t pt-3">
-                    <label for="speed" class="block text-sm font-medium text-gray-700 mb-2">Animation Speed</label>
-                    <input id="speed" type="range" min="1" max="10" value="5"
-                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
-                    <div class="flex justify-between text-xs text-gray-500 mt-1">
-                        <span>Slow</span>
-                        <span>Fast</span>
+                <!-- Control Panel -->
+                <div class="bg-white rounded-lg shadow-lg p-4">
+                    <h3 class="text-base font-semibold text-gray-800 mb-3">Controls</h3>
+
+                    <!-- Graph Controls -->
+                    <div class="space-y-2 mb-4">
+                        <button onclick="generateRandomGraph()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-3 rounded-lg transition-colors text-sm">
+                            Generate New Graph
+                        </button>
+                        <button onclick="resetAlgorithm()" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-3 rounded-lg transition-colors text-sm">
+                            Reset Algorithm
+                        </button>
+                    </div>
+
+                    <!-- Algorithm Controls -->
+                    <div class="border-t pt-3 space-y-2 mb-4">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="startAlgorithm()" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-2 rounded-lg transition-colors text-xs">
+                                Start
+                            </button>
+                            <button onclick="stopAlgorithm()" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-2 rounded-lg transition-colors text-xs">
+                                Stop
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="stepAlgorithm()" class="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-2 rounded-lg transition-colors text-xs">
+                                Step
+                            </button>
+                            <button onclick="continueAlgorithm()" class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-2 rounded-lg transition-colors text-xs">
+                                Continue
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Speed Control -->
+                    <div class="border-t pt-3">
+                        <label for="speed" class="block text-sm font-medium text-gray-700 mb-2">Animation Speed</label>
+                        <input id="speed" type="range" min="1" max="10" value="5"
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>Slow</span>
+                            <span>Fast</span>
+                        </div>
                     </div>
                 </div>
+
             </div>
-
         </div>
     </div>
-</div>
 
-<dialog id="what-is-modal"
-        class="self-center-safe justify-self-center rounded-lg shadow-xl max-w-lg w-full opacity-0 scale-95 transition-all duration-300 ease-out">
-    <div class="bg-white rounded-lg p-6 transform transition-all duration-300">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-semibold text-blue-600">What is Bellman-Ford?</h3>
-            <button onclick="document.getElementById('what-is-modal').close()"
-                    class="text-gray-400 hover:text-gray-600 transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-
-        <div class="text-sm text-gray-700 space-y-4">
-            <p class="leading-relaxed">
-                The <strong>Bellman-Ford algorithm</strong> is a single-source shortest path algorithm that computes
-                the
-                shortest paths from a single source vertex to all other vertices in a weighted directed graph.
-            </p>
-
-            <div class="bg-blue-50 p-4 rounded-lg">
-                <h4 class="font-semibold text-blue-700 mb-2">Key Characteristics:</h4>
-                <ul class="list-disc list-inside space-y-1 text-sm">
-                    <li>Can handle graphs with <strong>negative edge weights</strong></li>
-                    <li>Detects the presence of <strong>negative cycles</strong></li>
-                    <li>Works with both directed and undirected graphs</li>
-                    <li>More versatile than Dijkstra's algorithm for certain scenarios</li>
-                </ul>
+    <dialog id="what-is-modal"
+            class="self-center-safe justify-self-center rounded-lg shadow-xl max-w-lg w-full opacity-0 scale-95 transition-all duration-300 ease-out">
+        <div class="bg-white rounded-lg p-6 transform transition-all duration-300">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-blue-600">What is Bellman-Ford?</h3>
+                <button onclick="document.getElementById('what-is-modal').close()"
+                        class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
             </div>
 
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <h4 class="font-semibold text-gray-700 mb-2">Historical Context:</h4>
-                <p class="text-sm">
-                    Named after Richard Bellman and Lester Ford Jr., this algorithm was developed in the 1950s and
-                    1960s.
-                    It's particularly important in network routing and distributed systems where negative weights
-                    can
-                    represent
-                    costs, delays, or other metrics that need to be minimized.
+            <div class="text-sm text-gray-700 space-y-4">
+                <p class="leading-relaxed">
+                    The <strong>Bellman-Ford algorithm</strong> is a single-source shortest path algorithm that computes
+                    the
+                    shortest paths from a single source vertex to all other vertices in a weighted directed graph.
                 </p>
+
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-blue-700 mb-2">Key Characteristics:</h4>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>Can handle graphs with <strong>negative edge weights</strong></li>
+                        <li>Detects the presence of <strong>negative cycles</strong></li>
+                        <li>Works with both directed and undirected graphs</li>
+                        <li>More versatile than Dijkstra's algorithm for certain scenarios</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-gray-700 mb-2">Historical Context:</h4>
+                    <p class="text-sm">
+                        Named after Richard Bellman and Lester Ford Jr., this algorithm was developed in the 1950s and
+                        1960s.
+                        It's particularly important in network routing and distributed systems where negative weights
+                        can
+                        represent
+                        costs, delays, or other metrics that need to be minimized.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button onclick="document.getElementById('what-is-modal').close()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                    Close
+                </button>
             </div>
         </div>
+    </dialog>
 
-        <div class="mt-6 flex justify-end">
-            <button onclick="document.getElementById('what-is-modal').close()"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                Close
-            </button>
+    <dialog id="how-works-modal"
+            class="self-center-safe justify-self-center rounded-lg shadow-xl max-w-lg w-full flex justify-center items-center opacity-0 scale-95 transition-all duration-300 ease-out">
+        <div class="bg-white rounded-lg p-6 transform transition-all duration-300">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-green-600">How it Works</h3>
+                <button onclick="document.getElementById('how-works-modal').close()"
+                        class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="text-sm text-gray-700 space-y-4">
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-green-700 mb-3">Algorithm Steps:</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                                1
+                            </div>
+                            <div>
+                                <strong>Initialization:</strong> Set distance to source vertex as 0 and all other
+                                vertices
+                                as infinity (∞)
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                                2
+                            </div>
+                            <div>
+                                <strong>Relaxation:</strong> For V-1 iterations (where V = number of vertices), relax
+                                all
+                                edges.
+                                For each edge (u,v) with weight w, if distance[u] + w < distance[v], update distance[v]
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                                3
+                            </div>
+                            <div>
+                                <strong>Negative Cycle Detection:</strong> Run one more iteration. If any distance can
+                                still
+                                be reduced,
+                                a negative cycle exists
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                                4
+                            </div>
+                            <div>
+                                <strong>Result:</strong> If no negative cycle exists, the distances array contains the
+                                shortest path lengths from source to all vertices
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                    <h4 class="font-semibold text-yellow-700 mb-1">Why V-1 iterations?</h4>
+                    <p class="text-sm text-yellow-600">
+                        In the worst case, the shortest path between any two vertices can have at most V-1 edges
+                        (since we can't repeat vertices without creating a cycle). Therefore, V-1 relaxations are
+                        sufficient
+                        to find all shortest paths.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button onclick="document.getElementById('how-works-modal').close()"
+                        class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                    Close
+                </button>
+            </div>
         </div>
-    </div>
-</dialog>
+    </dialog>
 
-<dialog id="how-works-modal"
-        class="self-center-safe justify-self-center rounded-lg shadow-xl max-w-lg w-full flex justify-center items-center opacity-0 scale-95 transition-all duration-300 ease-out">
-    <div class="bg-white rounded-lg p-6 transform transition-all duration-300">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-semibold text-green-600">How it Works</h3>
-            <button onclick="document.getElementById('how-works-modal').close()"
-                    class="text-gray-400 hover:text-gray-600 transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
+    <dialog id="benefits-modal"
+            class="self-center-safe justify-self-center rounded-lg shadow-xl max-w-md w-full flex justify-center items-center opacity-0 scale-95 transition-all duration-300 ease-out">
+        <div class="bg-white rounded-lg p-6 transform transition-all duration-300">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-purple-600">Use Cases & Benefits</h3>
+                <button onclick="document.getElementById('benefits-modal').close()"
+                        class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="text-sm text-gray-700 space-y-4">
+                <div>
+                    <h4 class="font-semibold text-purple-700 mb-2">Use Cases:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Currency exchange systems and arbitrage detection</li>
+                        <li>Network routing protocols (distance-vector)</li>
+                        <li>Game theory and competitive analysis</li>
+                        <li>Financial modeling with debt/credit systems</li>
+                        <li>Social network analysis with negative relationships</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-purple-700 mb-2">Benefits:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Handles negative edge weights correctly</li>
+                        <li>Detects negative cycles in the graph</li>
+                        <li>Simple and straightforward implementation</li>
+                        <li>Works with directed graphs</li>
+                        <li>Guaranteed to find shortest paths if no negative cycles exist</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button onclick="document.getElementById('benefits-modal').close()"
+                        class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                    Close
+                </button>
+            </div>
         </div>
+    </dialog>
 
-        <div class="text-sm text-gray-700 space-y-4">
-            <div class="bg-green-50 p-4 rounded-lg">
-                <h4 class="font-semibold text-green-700 mb-3">Algorithm Steps:</h4>
-                <div class="space-y-3">
-                    <div class="flex items-start space-x-3">
-                        <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
-                            1
+    <dialog id="drawbacks-modal"
+            class="self-center-safe justify-self-center rounded-lg shadow-xl max-w-md w-full flex justify-center items-center opacity-0 scale-95 transition-all duration-300 ease-out">
+        <div class="bg-white rounded-lg p-6 transform transition-all duration-300">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-red-600">Drawbacks & Complexity</h3>
+                <button onclick="document.getElementById('drawbacks-modal').close()"
+                        class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="text-sm text-gray-700 space-y-4">
+                <div>
+                    <h4 class="font-semibold text-red-700 mb-2">Drawbacks:</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Slower than Dijkstra's algorithm for positive weights</li>
+                        <li>Cannot find shortest paths when negative cycles exist</li>
+                        <li>Less efficient for dense graphs</li>
+                        <li>Requires V-1 iterations regardless of early termination</li>
+                        <li>Not suitable for real-time applications due to complexity</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-red-700 mb-2">Complexity Analysis:</h4>
+                    <div class="space-y-2">
+                        <div>
+                            <span class="font-medium">Time Complexity:</span>
+                            <code class="ml-2 bg-red-100 text-red-700 px-2 py-1 rounded text-sm">O(V × E)</code>
                         </div>
                         <div>
-                            <strong>Initialization:</strong> Set distance to source vertex as 0 and all other
-                            vertices
-                            as infinity (∞)
+                            <span class="font-medium">Space Complexity:</span>
+                            <code class="ml-2 bg-red-100 text-red-700 px-2 py-1 rounded text-sm">O(V)</code>
                         </div>
-                    </div>
-                    <div class="flex items-start space-x-3">
-                        <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
-                            2
-                        </div>
-                        <div>
-                            <strong>Relaxation:</strong> For V-1 iterations (where V = number of vertices), relax
-                            all
-                            edges.
-                            For each edge (u,v) with weight w, if distance[u] + w < distance[v], update distance[v]
-                        </div>
-                    </div>
-                    <div class="flex items-start space-x-3">
-                        <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
-                            3
-                        </div>
-                        <div>
-                            <strong>Negative Cycle Detection:</strong> Run one more iteration. If any distance can
-                            still
-                            be reduced,
-                            a negative cycle exists
-                        </div>
-                    </div>
-                    <div class="flex items-start space-x-3">
-                        <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
-                            4
-                        </div>
-                        <div>
-                            <strong>Result:</strong> If no negative cycle exists, the distances array contains the
-                            shortest path lengths from source to all vertices
+                        <div class="text-xs text-gray-600 mt-2">
+                            Where V = number of vertices, E = number of edges
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                <h4 class="font-semibold text-yellow-700 mb-1">Why V-1 iterations?</h4>
-                <p class="text-sm text-yellow-600">
-                    In the worst case, the shortest path between any two vertices can have at most V-1 edges
-                    (since we can't repeat vertices without creating a cycle). Therefore, V-1 relaxations are
-                    sufficient
-                    to find all shortest paths.
-                </p>
+            <div class="mt-6 flex justify-end">
+                <button onclick="document.getElementById('drawbacks-modal').close()"
+                        class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                    Close
+                </button>
             </div>
         </div>
+    </dialog>
 
-        <div class="mt-6 flex justify-end">
-            <button onclick="document.getElementById('how-works-modal').close()"
-                    class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                Close
-            </button>
-        </div>
-    </div>
-</dialog>
-
-<dialog id="benefits-modal"
-        class="self-center-safe justify-self-center rounded-lg shadow-xl max-w-md w-full flex justify-center items-center opacity-0 scale-95 transition-all duration-300 ease-out">
-    <div class="bg-white rounded-lg p-6 transform transition-all duration-300">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-semibold text-purple-600">Use Cases & Benefits</h3>
-            <button onclick="document.getElementById('benefits-modal').close()"
-                    class="text-gray-400 hover:text-gray-600 transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-
-        <div class="text-sm text-gray-700 space-y-4">
-            <div>
-                <h4 class="font-semibold text-purple-700 mb-2">Use Cases:</h4>
-                <ul class="list-disc list-inside space-y-1">
-                    <li>Currency exchange systems and arbitrage detection</li>
-                    <li>Network routing protocols (distance-vector)</li>
-                    <li>Game theory and competitive analysis</li>
-                    <li>Financial modeling with debt/credit systems</li>
-                    <li>Social network analysis with negative relationships</li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="font-semibold text-purple-700 mb-2">Benefits:</h4>
-                <ul class="list-disc list-inside space-y-1">
-                    <li>Handles negative edge weights correctly</li>
-                    <li>Detects negative cycles in the graph</li>
-                    <li>Simple and straightforward implementation</li>
-                    <li>Works with directed graphs</li>
-                    <li>Guaranteed to find shortest paths if no negative cycles exist</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="mt-6 flex justify-end">
-            <button onclick="document.getElementById('benefits-modal').close()"
-                    class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                Close
-            </button>
-        </div>
-    </div>
-</dialog>
-
-<dialog id="drawbacks-modal"
-        class="self-center-safe justify-self-center rounded-lg shadow-xl max-w-md w-full flex justify-center items-center opacity-0 scale-95 transition-all duration-300 ease-out">
-    <div class="bg-white rounded-lg p-6 transform transition-all duration-300">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-semibold text-red-600">Drawbacks & Complexity</h3>
-            <button onclick="document.getElementById('drawbacks-modal').close()"
-                    class="text-gray-400 hover:text-gray-600 transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-
-        <div class="text-sm text-gray-700 space-y-4">
-            <div>
-                <h4 class="font-semibold text-red-700 mb-2">Drawbacks:</h4>
-                <ul class="list-disc list-inside space-y-1">
-                    <li>Slower than Dijkstra's algorithm for positive weights</li>
-                    <li>Cannot find shortest paths when negative cycles exist</li>
-                    <li>Less efficient for dense graphs</li>
-                    <li>Requires V-1 iterations regardless of early termination</li>
-                    <li>Not suitable for real-time applications due to complexity</li>
-                </ul>
-            </div>
-
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <h4 class="font-semibold text-red-700 mb-2">Complexity Analysis:</h4>
-                <div class="space-y-2">
-                    <div>
-                        <span class="font-medium">Time Complexity:</span>
-                        <code class="ml-2 bg-red-100 text-red-700 px-2 py-1 rounded text-sm">O(V × E)</code>
-                    </div>
-                    <div>
-                        <span class="font-medium">Space Complexity:</span>
-                        <code class="ml-2 bg-red-100 text-red-700 px-2 py-1 rounded text-sm">O(V)</code>
-                    </div>
-                    <div class="text-xs text-gray-600 mt-2">
-                        Where V = number of vertices, E = number of edges
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-6 flex justify-end">
-            <button onclick="document.getElementById('drawbacks-modal').close()"
-                    class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                Close
-            </button>
-        </div>
-    </div>
-</dialog>
-
-<script src="./scripts/app.js"></script>
-<script src="./scripts/buttons.js"></script>
-<script src="./scripts/modals.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./scripts/app.js"></script>
+    <script src="./scripts/buttons.js"></script>
+    <script src="./scripts/modals.js"></script>
 </body>
 </html>

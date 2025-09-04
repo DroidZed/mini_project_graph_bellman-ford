@@ -488,7 +488,30 @@ function checkForNegativeCycle() {
 }
 
 function highlightShortestPath() {
-    if (!targetNode || hasNegativeCycle) return;
+    // Return if no target is selected by the user
+    if (!targetNode) return;
+
+    // Check for a negative cycle first
+    if (hasNegativeCycle) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Negative Weight Cycle Detected!',
+            text: 'A valid shortest path cannot be determined because the graph contains a negative cycle.',
+        });
+        return; // Stop execution
+    }
+
+    // Check if the target is unreachable
+    if (distances[targetNode] === Infinity) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Path Not Found',
+            text: `The target node ${targetNode} is not reachable from the source node ${sourceNode}.`,
+        });
+        return; // Stop execution
+    }
+
+    // --- If we reach here, a valid path was found ---
 
     // Clear previous path highlighting
     graph.edges.forEach(edge => {
@@ -497,7 +520,6 @@ function highlightShortestPath() {
 
     // Trace back the shortest path
     let current = targetNode;
-    // We check predecessors[current] to avoid an error if the target is unreachable
     while (current && predecessors[current] !== null) {
         const prev = predecessors[current];
         const edge = graph.edges.find(e => e.from === prev && e.to === current);
