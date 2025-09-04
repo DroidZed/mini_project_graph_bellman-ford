@@ -13,9 +13,10 @@ let animationSpeed = 500;
 let sourceNode = null;
 let targetNode = null;
 let hasNegativeCycle = false;
+let draggedNode = null; // <-- ADDED: To keep track of the node being dragged
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeGraph();
     setupEventListeners();
 });
@@ -64,7 +65,7 @@ function setupEventListeners() {
 
     // Speed control
     const speedSlider = document.getElementById('speed');
-    speedSlider.addEventListener('input', function() {
+    speedSlider.addEventListener('input', function () {
         animationSpeed = 1100 - (parseInt(this.value) * 100);
     });
 
@@ -72,16 +73,52 @@ function setupEventListeners() {
     const sourceSelect = document.getElementById('source');
     const targetSelect = document.getElementById('target');
 
-    sourceSelect.addEventListener('change', function() {
+    sourceSelect.addEventListener('change', function () {
         sourceNode = this.value !== 'Select source...' ? this.value : null;
         updateNodeColors();
     });
 
-    targetSelect.addEventListener('change', function() {
+    targetSelect.addEventListener('change', function () {
         targetNode = this.value !== 'Select target...' ? this.value : null;
         updateNodeColors();
     });
+
+    // --- ADDED: Event listeners for dragging ---
+    graphSvg.addEventListener('mousemove', handleMouseMove);
+    graphSvg.addEventListener('mouseup', handleMouseUp);
+    graphSvg.addEventListener('mouseleave', handleMouseUp); // Stop dragging if mouse leaves SVG
 }
+
+// --- ADDED: Helper to get mouse coordinates within the SVG viewBox ---
+function getSVGCoordinates(event) {
+    const svgRect = graphSvg.getBoundingClientRect();
+    const x = event.clientX - svgRect.left;
+    const y = event.clientY - svgRect.top;
+
+    // Convert screen coordinates to SVG viewBox coordinates
+    const svgX = (x / svgRect.width) * graphSvg.viewBox.baseVal.width;
+    const svgY = (y / svgRect.height) * graphSvg.viewBox.baseVal.height;
+
+    return {x: svgX, y: svgY};
+}
+
+
+// --- ADDED: Handlers for mouse move and mouse up events ---
+function handleMouseMove(event) {
+    if (!draggedNode) return; // Do nothing if not dragging
+    event.preventDefault();
+
+    const {x, y} = getSVGCoordinates(event);
+    draggedNode.x = x;
+    draggedNode.y = y;
+    renderGraph(); // Re-render the graph with the new node position
+}
+
+function handleMouseUp() {
+    draggedNode = null; // Stop dragging
+    graphSvg.style.cursor = 'default'; // Reset cursor
+}
+
 
 function generateRandomGraph() {
     const numNodes = Math.floor(Math.random() * 4) + 5; // 5-8 nodes
@@ -221,7 +258,7 @@ function renderEdge(edge) {
     // Add weight label
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     text.setAttribute('x', midX);
-    text.setAttribute('y', midY - 10);
+    text.setAttribute('y', `${midY - 10}`);
     text.setAttribute('text-anchor', 'middle');
     text.setAttribute('font-size', '12');
     text.setAttribute('font-weight', 'bold');
@@ -229,12 +266,12 @@ function renderEdge(edge) {
 
     // Add background rectangle for better readability
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    const bbox = text.getBBox ? text.getBBox() : { width: 20, height: 14, x: midX - 10, y: midY - 17 };
+    // const bbox = text.getBBox ? text.getBBox() : { width: 20, height: 14, x: midX - 10, y: midY - 17 };
 
     text.textContent = edge.weight;
 
-    rect.setAttribute('x', midX - 15);
-    rect.setAttribute('y', midY - 18);
+    rect.setAttribute('x', `${midX - 15}`);
+    rect.setAttribute('y', `${midY - 18}`);
     rect.setAttribute('width', '30');
     rect.setAttribute('height', '16');
     rect.setAttribute('fill', 'white');
@@ -247,6 +284,14 @@ function renderEdge(edge) {
 
 function renderNode(node) {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    // --- MODIFIED: Added style and mousedown event for dragging ---
+    group.style.cursor = 'grab';
+    group.addEventListener('mousedown', (event) => {
+        event.preventDefault();
+        draggedNode = node; // Set the node to be dragged
+        graphSvg.style.cursor = 'grabbing'; // Change cursor during drag
+    });
+
 
     // Node circle
     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -281,19 +326,18 @@ function renderNode(node) {
     if (distances[node.id] !== undefined) {
         const distanceText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         distanceText.setAttribute('x', node.x);
-        distanceText.setAttribute('y', node.y - 35);
+        distanceText.setAttribute('y', `${node.y - 35}`);
         distanceText.setAttribute('text-anchor', 'middle');
         distanceText.setAttribute('font-size', '12');
         distanceText.setAttribute('font-weight', 'bold');
         distanceText.setAttribute('fill', '#1f2937');
 
-        const distValue = distances[node.id] === Infinity ? '∞' : distances[node.id];
-        distanceText.textContent = distValue;
+        distanceText.textContent = distances[node.id] === Infinity ? '∞' : distances[node.id];
 
         // Background for distance
         const distRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        distRect.setAttribute('x', node.x - 15);
-        distRect.setAttribute('y', node.y - 45);
+        distRect.setAttribute('x', `${node.x - 15}`);
+        distRect.setAttribute('y', `${node.y - 45}`);
         distRect.setAttribute('width', '30');
         distRect.setAttribute('height', '16');
         distRect.setAttribute('fill', 'rgba(255, 255, 255, 0.9)');
@@ -344,10 +388,15 @@ function stepAlgorithm() {
     performBellmanFordStep();
 }
 
+// ====================================================================
+// ===== CORRECTED CODE STARTS HERE ===================================
+// ====================================================================
+
 function continueAlgorithm() {
     if (!isRunning) return;
 
-    if (currentIteration <= maxIterations) {
+    // The loop runs as long as we haven't completed V-1 iterations
+    if (currentIteration < maxIterations) {
         performBellmanFordStep();
         setTimeout(() => {
             if (isRunning) {
@@ -355,6 +404,7 @@ function continueAlgorithm() {
             }
         }, animationSpeed);
     } else {
+        // Once iterations are done, we finalize everything here
         isRunning = false;
         checkForNegativeCycle();
         highlightShortestPath();
@@ -381,51 +431,47 @@ function initializeBellmanFord() {
 }
 
 function performBellmanFordStep() {
-    if (currentIteration < maxIterations) {
-        // Regular Bellman-Ford relaxation
-        let updated = false;
+    // This function now ONLY performs one step of the relaxation process.
+    // It no longer contains logic for finishing the algorithm.
+    let updated = false;
 
-        graph.edges.forEach(edge => {
-            edge.isProcessing = true;
+    graph.edges.forEach(edge => {
+        edge.isProcessing = true;
 
-            const u = edge.from;
-            const v = edge.to;
-            const weight = edge.weight;
+        const u = edge.from;
+        const v = edge.to;
+        const weight = edge.weight;
 
-            if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
-                distances[v] = distances[u] + weight;
-                predecessors[v] = u;
-                updated = true;
+        if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
+            distances[v] = distances[u] + weight;
+            predecessors[v] = u;
+            updated = true;
 
-                // Update node distance
-                const node = graph.nodes.find(n => n.id === v);
-                if (node) {
-                    node.distance = distances[v];
-                }
+            // Update node distance
+            const node = graph.nodes.find(n => n.id === v);
+            if (node) {
+                node.distance = distances[v];
             }
+        }
+    });
+
+    currentIteration++;
+
+    // Reset edge processing state after a delay for visualization
+    setTimeout(() => {
+        graph.edges.forEach(edge => {
+            edge.isProcessing = false;
         });
-
-        currentIteration++;
-
-        // Reset edge processing state after a delay
-        setTimeout(() => {
-            graph.edges.forEach(edge => {
-                edge.isProcessing = false;
-            });
-            renderGraph();
-        }, animationSpeed / 2);
-
-    } else if (currentIteration === maxIterations) {
-        // Check for negative cycles
-        checkForNegativeCycle();
-        highlightShortestPath();
-        currentIteration++;
-        isRunning = false;
-    }
+        renderGraph();
+    }, animationSpeed / 2);
 
     updateStatistics();
     renderGraph();
 }
+
+// ====================================================================
+// ===== CORRECTED CODE ENDS HERE =====================================
+// ====================================================================
 
 function checkForNegativeCycle() {
     graph.edges.forEach(edge => {
@@ -451,7 +497,8 @@ function highlightShortestPath() {
 
     // Trace back the shortest path
     let current = targetNode;
-    while (predecessors[current] !== null) {
+    // We check predecessors[current] to avoid an error if the target is unreachable
+    while (current && predecessors[current] !== null) {
         const prev = predecessors[current];
         const edge = graph.edges.find(e => e.from === prev && e.to === current);
         if (edge) {
@@ -506,9 +553,11 @@ function updateStatistics() {
     // Update shortest path length
     const pathLengthElement = document.querySelector('.text-purple-600');
     if (pathLengthElement && targetNode && distances[targetNode] !== undefined) {
-        const distance = distances[targetNode] === Infinity ? 'N/A' : distances[targetNode];
-        pathLengthElement.textContent = distance;
+        pathLengthElement.textContent = distances[targetNode] === Infinity ? 'N/A' : distances[targetNode];
+    } else if (pathLengthElement) {
+        pathLengthElement.textContent = 'N/A';
     }
+
 
     // Update negative cycle detection
     const negativeCycleElement = document.querySelector('.text-red-600');
