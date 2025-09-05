@@ -73,12 +73,17 @@ button:active {
 /* Graph container styling */
 #graph-container {
     position: relative;
+    cursor: grab; /* ADD: Change cursor to indicate panning is possible */
     background: linear-gradient(45deg, #f8fafc 25%, transparent 25%),
     linear-gradient(-45deg, #f8fafc 25%, transparent 25%),
     linear-gradient(45deg, transparent 75%, #f8fafc 75%),
     linear-gradient(-45deg, transparent 75%, #f8fafc 75%);
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+#graph-container:active {
+    cursor: grabbing; /* ADD: Change cursor during active pan */
 }
 
 /* Loading animation for processing nodes */
@@ -121,19 +126,9 @@ button:active {
     opacity: 1;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    #graph-container {
-        height: 400px;
-    }
-}
 
 @media (max-width: 768px) {
     .grid-cols-1.lg\\:grid-cols-5 {
         grid-template-columns: 1fr;
-    }
-
-    #graph-container {
-        height: 300px;
     }
 }

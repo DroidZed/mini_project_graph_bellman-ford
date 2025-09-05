@@ -220,6 +220,7 @@ function renderEdge(edge) {
 function renderNode(node) {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     group.style.cursor = 'grab';
+    group.classList.add('node');
     group.addEventListener('mousedown', (event) => {
         event.preventDefault();
         draggedNode = node;
