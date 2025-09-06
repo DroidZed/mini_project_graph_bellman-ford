@@ -6,5 +6,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="sweetalert2" level="application" />
+    <orderEntry type="library" name="@panzoom/panzoom" level="application" />
   </component>
 </module>
